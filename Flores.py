@@ -17,6 +17,7 @@ st.set_page_config(
     initial_sidebar_state = 'auto'
 )
 
+
 # hide the part of the code, as this is just for adding some custom CSS styling but not a part of the main idea 
 hide_streamlit_style = """
 	<style>
