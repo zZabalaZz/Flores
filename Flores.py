@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 # set some pre-defined configurations for the page, such as the page title, logo-icon, page loading state (whether the page is loaded automatically or you need to perform some action for loading)
 st.set_page_config(
     page_title="Reconocimiento de Flores",
-    page_icon = ":smile:",
+    page_icon = "icono.png",
     initial_sidebar_state = 'auto'
 )
 
