@@ -58,7 +58,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True) # Oculta el código CS
 #st.set_option('deprecation.showfileUploaderEncoding', False)
 @st.cache_resource
 def load_model():
-    model=tf.keras.models.load_model('./flores.h5')
+    model=tf.keras.models.load_model('./flores_model.h5')
     return model
 with st.spinner('Modelo está cargando..'):
     model=load_model()
