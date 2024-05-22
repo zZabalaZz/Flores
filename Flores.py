@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Reconocimiento de Flores",
+    page_title="Reconocimiento de Productos",
     page_icon="icono.png",
     initial_sidebar_state='auto'
 )
@@ -36,15 +36,15 @@ with st.spinner('Modelo está cargando...'):
     model = load_model()
 
 with st.sidebar:
-    st.image('Rosa.jpg')
+    st.image('foto.jpg')
     st.title("Reconocimiento de imagen")
-    st.subheader("Reconocimiento de imagen para flores")
+    st.subheader("Reconocimiento de imagen para Productos")
 
 st.image('logo.png')
-st.title("Smart Regions Center")
-st.write("Somos un equipo apasionado de profesionales dedicados a hacer la diferencia")
+st.title("Pruebas")
+st.write("Sólo yo, nadie más, quizás Iván, pero nadie más")
 st.write("""
-         # Detección de flores
+         # Detección de Productos
          """)
 
 def import_and_predict(image_data, model, class_names):
@@ -98,9 +98,9 @@ if image is not None:
     
     # Mostrar el resultado
     if np.max(score) > 0.5:
-        st.subheader(f"Tipo de Flor: {class_name}")
+        st.subheader(f"Producto: {class_name}")
         st.text(f"Puntuación de confianza: {100 * np.max(score):.2f}%")
     else:
-        st.text(f"No se pudo determinar el tipo de flor")
+        st.text(f"No se pudo determinar el producto")
 else:
     st.text("Por favor proporciona una imagen")
