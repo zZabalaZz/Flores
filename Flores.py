@@ -1,90 +1,106 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import streamlit as st  
-import tensorflow as tf # TensorFlow is required for Keras to work
+import tensorflow as tf
 from PIL import Image
 import numpy as np
-#import cv2
+import requests
+from io import BytesIO
 
-# hide deprication warnings which directly don't affect the working of the application
+# Ocultar advertencias de deprecación
 import warnings
 warnings.filterwarnings("ignore")
 
-# set some pre-defined configurations for the page, such as the page title, logo-icon, page loading state (whether the page is loaded automatically or you need to perform some action for loading)
+# Configuración de la página
 st.set_page_config(
     page_title="Reconocimiento de Flores",
-    page_icon = "icono.png",
-    initial_sidebar_state = 'auto'
+    page_icon="icono.png",
+    initial_sidebar_state='auto'
 )
 
-
-# hide the part of the code, as this is just for adding some custom CSS styling but not a part of the main idea 
+# Estilo personalizado para ocultar el menú y el pie de página
 hide_streamlit_style = """
-	<style>
-  #MainMenu {visibility: hidden;}
-	footer {visibility: hidden;}
-  </style>
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
 """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) # Oculta el código CSS de la pantalla, ya que están incrustados en el texto de rebajas. Además, permita que Streamlit se procese de forma insegura como HTML
-
-#st.set_option('deprecation.showfileUploaderEncoding', False)
 @st.cache_resource
 def load_model():
-    model=tf.keras.models.load_model('./flores_model.h5')
+    model = tf.keras.models.load_model('./modeloIA.h5')
     return model
-with st.spinner('Modelo está cargando..'):
-    model=load_model()
-    
 
+with st.spinner('Modelo está cargando...'):
+    model = load_model()
 
 with st.sidebar:
-        st.image('Rosa.jpg')
-        st.title("Reconocimiento de imagen")
-        st.subheader("Reconocimiento de imagen para flores")
+    st.image('Rosa.jpg')
+    st.title("Reconocimiento de imagen")
+    st.subheader("Reconocimiento de imagen para flores")
 
 st.image('logo.png')
 st.title("Smart Regions Center")
 st.write("Somos un equipo apasionado de profesionales dedicados a hacer la diferencia")
 st.write("""
          # Detección de flores
-         """
-         )
-
+         """)
 
 def import_and_predict(image_data, model, class_names):
-    
     image_data = image_data.resize((180, 180))
-    
     image = tf.keras.utils.img_to_array(image_data)
-    image = tf.expand_dims(image, 0) # Create a batch
+    image = tf.expand_dims(image, 0)  # Crear un batch
 
-    
     # Predecir con el modelo
     prediction = model.predict(image)
     index = np.argmax(prediction)
     score = tf.nn.softmax(prediction[0])
-    class_name = class_names[index]
+    class_name = class_names[index].strip()
     
     return class_name, score
 
-
 class_names = open("./clases.txt", "r").readlines()
 
-img_file_buffer = st.camera_input("Capture una foto para identificar una flor")    
-if img_file_buffer is None:
-    st.text("Por favor tome una foto")
-else:
-    image = Image.open(img_file_buffer)
+# Opciones para ingresar la imagen
+option = st.selectbox(
+    'Selecciona cómo deseas subir la imagen:',
+    ('Tomar una foto', 'Subir una foto', 'Ingresar URL de una foto')
+)
+
+image = None
+
+if option == 'Tomar una foto':
+    img_file_buffer = st.camera_input("Capture una foto para identificar una flor")
+    if img_file_buffer is not None:
+        image = Image.open(img_file_buffer)
+
+elif option == 'Subir una foto':
+    uploaded_file = st.file_uploader("Sube una imagen", type=["jpg", "jpeg", "png"])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+
+elif option == 'Ingresar URL de una foto':
+    url = st.text_input("Ingresa el URL de la imagen")
+    if url:
+        try:
+            response = requests.get(url)
+            image = Image.open(BytesIO(response.content))
+        except:
+            st.error("No se pudo cargar la imagen desde el URL proporcionado.")
+
+# Procesar la imagen y mostrar resultados
+if image is not None:
     st.image(image, use_column_width=True)
     
     # Realizar la predicción
     class_name, score = import_and_predict(image, model, class_names)
     
     # Mostrar el resultado
-
-    if np.max(score)>0.5:
+    if np.max(score) > 0.5:
         st.subheader(f"Tipo de Flor: {class_name}")
         st.text(f"Puntuación de confianza: {100 * np.max(score):.2f}%")
     else:
         st.text(f"No se pudo determinar el tipo de flor")
+else:
+    st.text("Por favor proporciona una imagen")
