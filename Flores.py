@@ -29,7 +29,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model('./modelo_productos_IA.h5')
+    model = tf.keras.models.load_model('./model_IA_2.h5')
     return model
 with st.spinner('Modelo está cargando...'):
     model = load_model()
@@ -59,7 +59,7 @@ def import_and_predict(image_data, model, class_names):
     
     return class_name, score
 
-class_names = open("./clases.txt", "r").readlines()
+class_names = open("./clases_IA_2.txt", "r").readlines()
 
 # Opciones para ingresar la imagen
 option = st.selectbox(
