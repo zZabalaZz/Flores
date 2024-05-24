@@ -60,7 +60,7 @@ def import_and_predict(image_data, model, class_names):
     
     return class_name, score
 
-class_names = open("\clases.txt", "r").readlines()
+class_names = open("clases.txt", "r").readlines()
 
 # Opciones para ingresar la imagen
 option = st.selectbox(
