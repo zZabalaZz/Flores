@@ -31,7 +31,6 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 def load_model():
     model = tf.keras.models.load_model('./modelo_productos_IA.h5')
     return model
-
 with st.spinner('Modelo está cargando...'):
     model = load_model()
 
