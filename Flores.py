@@ -18,6 +18,7 @@ st.set_page_config(
     initial_sidebar_state='auto'
 )
 
+
 # Estilo personalizado para ocultar el menú y el pie de página
 hide_streamlit_style = """
     <style>
@@ -59,7 +60,7 @@ def import_and_predict(image_data, model, class_names):
     
     return class_name, score
 
-class_names = open("./clases_IA_2.txt", "r").readlines()
+class_names = open("\clases_IA_2.txt", "r").readlines()
 
 # Opciones para ingresar la imagen
 option = st.selectbox(
